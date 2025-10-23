@@ -1,4 +1,5 @@
 import 'package:expenses_app/presentation/providers/expenses_provider.dart';
+import 'package:expenses_app/presentation/widgets/error_dialogue.dart';
 import 'package:expenses_app/presentation/widgets/shimmer_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
       body: state.isloading ?? false
           ? const ShimmerEffect()
           : state.error != null
-          ? Center(child: Text('Error: ${state.error}'))
+          ? ErrorDialogue(errorMessage: state.error.toString())
           : ListView.builder(
         padding: const EdgeInsets.all(12),
         itemCount: state.expenses?.length ?? 0,
