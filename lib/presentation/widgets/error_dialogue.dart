@@ -1,13 +1,16 @@
 import 'package:expenses_app/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/expenses_provider.dart';
 import '../screens/dashboard_screen.dart';
 
-class ErrorDialogue extends StatelessWidget {
+class ErrorDialogue extends ConsumerWidget {
   const ErrorDialogue({super.key, required this.errorMessage});
   final String errorMessage;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,ref) {
+    //ref.watch(expensesNotifierProvider);
     return  Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -42,30 +45,55 @@ class ErrorDialogue extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            SizedBox(
-              width: 90,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 90,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Closes the dialog
+                     // Optional: navigate to dashboard
+                      //
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (_) => HomeScreen()),
+                              (route) => false, // remove all previous routes
+                        );
+                      });
+                    },
+                    child: const Text(
+                      "Exit",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Closes the dialog
-                  // Optional: navigate to dashboard
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => HomeScreen()),
-                          (route) => false, // remove all previous routes
-                    );
-                  });
-                },
-                child: const Text(
-                  "OK",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(width: 18),
+                SizedBox(
+                  width: 90,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    onPressed: () {
+                      ref.read(expensesNotifierProvider.notifier).fecthExpenses(101);
+                    },
+                    child: const Text(
+                      "Retry",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
