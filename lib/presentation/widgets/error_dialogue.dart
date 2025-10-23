@@ -85,7 +85,13 @@ class ErrorDialogue extends ConsumerWidget {
                       ),
                     ),
                     onPressed: () {
-                      ref.read(expensesNotifierProvider.notifier).fecthExpenses(101);
+                      Navigator.of(context).pop();
+                        ref.read(expensesNotifierProvider.notifier).clearError();
+                      // final container = ProviderScope.containerOf(context);
+                      // container.invalidate(expensesNotifierProvider);
+                      Future.microtask(() async {
+                        await  ref.read(expensesNotifierProvider.notifier).fecthExpenses(101);
+                      });
                     },
                     child: const Text(
                       "Retry",

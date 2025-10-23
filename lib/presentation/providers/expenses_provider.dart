@@ -19,7 +19,7 @@ class ExpensesSate {
     return ExpensesSate(
         isloading : isloading ?? this.isloading,
         expenses : expenses ?? this.expenses,
-        error : error ?? this.error
+        error : error
     );
   }
 }
@@ -30,12 +30,18 @@ class ExpensesNotifier extends StateNotifier<ExpensesSate>{
   ExpensesNotifier( this.expensesUsecases): super(const ExpensesSate());
   Future<void> fecthExpenses(int userID)async {
     try {
-      state = state.copyWith(isloading: true);
+      state = state.copyWith(isloading: true,error: null);
       final result = await expensesUsecases(userID);
-      state = state.copyWith(isloading: false, expenses: result);
+      state = state.copyWith(isloading: false, expenses: result,error: null);
     }catch(e){
       state = state.copyWith(isloading: false,error: e.toString());
     }
+  }
+
+  void clearError(){
+    print("Clearing error - before: ${state.error}");
+    state = state.copyWith(error: null);
+    print("Clearing error - after: ${state.error}"); // Debug
   }
 }
 
