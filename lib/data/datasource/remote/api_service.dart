@@ -62,7 +62,6 @@ class ApiService {
       final response = await dioClient.dio.get(
         '/expenses/getAllExpenses.php',
         queryParameters: {'UserID': userId},
-
       );
       if(response.statusCode == 200 && response.data['expensesList'] != null){
         final List<dynamic> list = response.data['expensesList'];

@@ -1,3 +1,4 @@
+import 'package:expenses_app/presentation/screens/add_category.dart';
 import 'package:expenses_app/presentation/screens/expenses_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -73,7 +74,7 @@ class DashboardScreen extends StatelessWidget {
               _addButton(
                 text: 'Category',
                 onTap: () {
-                  print('Category');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddCategory()));
                 },
               ),
             ],
