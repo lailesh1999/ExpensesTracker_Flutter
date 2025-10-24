@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:js_interop';
 
 import 'package:dio/dio.dart';
 import 'package:expenses_app/core/network/dio_client.dart';
+import 'package:expenses_app/data/model/crud_api_response_model.dart';
 import 'package:expenses_app/data/model/expenses_model.dart';
 
 import '../../model/login_response_models.dart';
@@ -75,6 +77,20 @@ class ApiService {
       } else {
         throw Exception(e.toString());
       }
+    }
+  }
+
+  Future<CrudApiResponseModel> addCategory(JSObject data) async{
+    
+    try{
+      final response = await dioClient.dio.post('category/insertCategory.php',data: data);
+      if(response.statusCode == 200 && response.data != null){
+        return response.data;
+      }else{
+        throw Exception('Data is not inserted');
+      }
+    }catch(e){
+      throw Exception(e.toString());
     }
   }
 }
