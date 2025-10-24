@@ -1,3 +1,5 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:expenses_app/presentation/providers/connectivity_provider.dart';
 import 'package:expenses_app/presentation/providers/expenses_provider.dart';
 import 'package:expenses_app/presentation/widgets/error_dialogue.dart';
 import 'package:expenses_app/presentation/widgets/shimmer_effect.dart';
@@ -25,16 +27,19 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(expensesNotifierProvider);
-    if (state.error != null && !(state.isloading ?? false)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) =>
-              ErrorDialogue(errorMessage: state.error.toString()),
-        );
-      });
-    }
+     ref.watch(connectivityProvider);
+
+
+    ref.listen(connectivityProvider, (prev,next){
+      if(next.value!.contains(ConnectivityResult.mobile) || next.value!.contains(ConnectivityResult.wifi)){
+        if(state != null){
+          ref.read(expensesNotifierProvider.notifier).clearError();
+          ref.read(expensesNotifierProvider.notifier).fecthExpenses(101);
+        }
+      }
+    });
+
+
       return Scaffold(
         appBar: AppBar(
           title: const Text('Expenses'),
@@ -44,26 +49,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
             ? const ShimmerEffect()
             : (state.error != null && state.expenses?.isEmpty != false)
             ? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, color: Colors.red, size: 64),
-              SizedBox(height: 16),
-              Text(
-                'Failed to load expenses',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  ref.read(expensesNotifierProvider.notifier).fecthExpenses(
-                      101);
-                },
-                child: Text('Retry'),
-              ),
-            ],
-          ),
-        ) : ListView.builder(
+          child: ErrorDialogue(errorMessage: "Failed to load the data ..Please try Again ")) : ListView.builder(
           padding: const EdgeInsets.all(12),
           itemCount: state.expenses?.length ?? 0,
           itemBuilder: (context, index) {

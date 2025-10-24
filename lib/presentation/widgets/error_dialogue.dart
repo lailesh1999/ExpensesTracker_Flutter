@@ -10,7 +10,6 @@ class ErrorDialogue extends ConsumerWidget {
   final String errorMessage;
   @override
   Widget build(BuildContext context,ref) {
-    //ref.watch(expensesNotifierProvider);
     return  Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -85,10 +84,7 @@ class ErrorDialogue extends ConsumerWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop();
                         ref.read(expensesNotifierProvider.notifier).clearError();
-                      // final container = ProviderScope.containerOf(context);
-                      // container.invalidate(expensesNotifierProvider);
                       Future.microtask(() async {
                         await  ref.read(expensesNotifierProvider.notifier).fecthExpenses(101);
                       });
